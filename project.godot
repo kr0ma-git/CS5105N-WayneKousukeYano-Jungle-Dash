@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="School-Dash"
-run/main_scene="uid://tgddqexo14um"
+run/main_scene="res://scenes/level_1.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 

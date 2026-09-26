@@ -160,6 +160,8 @@ animations = [{
 size = Vector2(15.5, 47)
 
 [node name="Player" type="CharacterBody2D" unique_id=1771378537]
+collision_layer = 2
+collision_mask = 1
 script = ExtResource("1_g2els")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=475622202]
@@ -172,3 +174,7 @@ frame_progress = 0.21615261
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=582796353]
 position = Vector2(-2, -24)
 shape = SubResource("RectangleShape2D_1807b")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1703715811]
+position = Vector2(0, -50)
+limit_left = 0
