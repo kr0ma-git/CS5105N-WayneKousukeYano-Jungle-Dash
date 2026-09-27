@@ -1,0 +1,146 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_menu"]
+[ext_resource type="Theme" path="res://assets/ui/theme.tres" id="2_theme"]
+[ext_resource type="Texture2D" path="res://assets/generated/jungle_bg.png" id="3_bg"]
+
+[node name="MainMenu" type="Control"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_menu")
+
+[node name="Backdrop" type="TextureRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Dimmer" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.03, 0.09, 0.06, 0.5)
+
+[node name="Title" type="Label" parent="."]
+anchor_right = 1.0
+offset_top = 40.0
+offset_bottom = 148.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.79, 1)
+theme_override_colors/font_outline_color = Color(0.05, 0.16, 0.07, 1)
+theme_override_constants/outline_size = 14
+theme_override_font_sizes/font_size = 90
+text = "JUNGLE DASH"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Subtitle" type="Label" parent="."]
+anchor_right = 1.0
+offset_top = 150.0
+offset_bottom = 194.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.85, 0.95, 0.8, 1)
+theme_override_colors/font_outline_color = Color(0.05, 0.16, 0.07, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 26
+text = "endless jungle run"
+horizontal_alignment = 1
+
+[node name="Center" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Buttons" type="VBoxContainer" parent="Center"]
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="PlayButton" type="Button" parent="Center/Buttons"]
+custom_minimum_size = Vector2(280, 58)
+text = "PLAY"
+
+[node name="SettingsButton" type="Button" parent="Center/Buttons"]
+custom_minimum_size = Vector2(280, 58)
+text = "SETTINGS"
+
+[node name="QuitButton" type="Button" parent="Center/Buttons"]
+custom_minimum_size = Vector2(280, 58)
+text = "QUIT"
+
+[node name="CenterSettings" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="SettingsPanel" type="PanelContainer" parent="CenterSettings"]
+
+[node name="VBox" type="VBoxContainer" parent="CenterSettings/SettingsPanel"]
+theme_override_constants/separation = 16
+
+[node name="SettingsTitle" type="Label" parent="CenterSettings/SettingsPanel/VBox"]
+theme_override_font_sizes/font_size = 40
+text = "SETTINGS"
+horizontal_alignment = 1
+
+[node name="MusicRow" type="HBoxContainer" parent="CenterSettings/SettingsPanel/VBox"]
+theme_override_constants/separation = 20
+
+[node name="MusicLabel" type="Label" parent="CenterSettings/SettingsPanel/VBox/MusicRow"]
+custom_minimum_size = Vector2(150, 0)
+text = "Music"
+
+[node name="MusicSlider" type="HSlider" parent="CenterSettings/SettingsPanel/VBox/MusicRow"]
+custom_minimum_size = Vector2(300, 0)
+max_value = 100.0
+value = 70.0
+
+[node name="SfxRow" type="HBoxContainer" parent="CenterSettings/SettingsPanel/VBox"]
+theme_override_constants/separation = 20
+
+[node name="SfxLabel" type="Label" parent="CenterSettings/SettingsPanel/VBox/SfxRow"]
+custom_minimum_size = Vector2(150, 0)
+text = "Sound FX"
+
+[node name="SfxSlider" type="HSlider" parent="CenterSettings/SettingsPanel/VBox/SfxRow"]
+custom_minimum_size = Vector2(300, 0)
+max_value = 100.0
+value = 80.0
+
+[node name="KeyRow" type="HBoxContainer" parent="CenterSettings/SettingsPanel/VBox"]
+theme_override_constants/separation = 20
+
+[node name="KeyLabel" type="Label" parent="CenterSettings/SettingsPanel/VBox/KeyRow"]
+custom_minimum_size = Vector2(150, 0)
+text = "Jump key"
+
+[node name="JumpKeyValue" type="Label" parent="CenterSettings/SettingsPanel/VBox/KeyRow"]
+custom_minimum_size = Vector2(150, 0)
+theme_override_colors/font_color = Color(1, 0.9, 0.5, 1)
+text = "SPACE"
+
+[node name="ChangeKeyButton" type="Button" parent="CenterSettings/SettingsPanel/VBox/KeyRow"]
+text = "Change"
+
+[node name="CloseButton" type="Button" parent="CenterSettings/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 52)
+text = "BACK"

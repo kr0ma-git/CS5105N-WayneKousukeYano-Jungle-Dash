@@ -1,16 +1,18 @@
 class_name Player
 extends CharacterBody2D
 
-## Auto-running side-scroller hero. The hero always moves right; the only input
-## is "jump". Falling into a pit or touching a hazard calls die(), which the
-## Level listens for so it can respawn the player.
+## Auto-running side-scroller hero. The hero always moves right, the only input
+## is "jump", and animation is split in two (frames on AnimatedSprite2D, squash
+## & stretch "juice" on AnimationPlayer).
 ##
-## Animation is split in two and driven from a small state machine
-## (idle / run / jump / fall / land):
-##   * AnimatedSprite2D holds the pixel-art frames.
-##   * AnimationPlayer plays transform "juice" (squash & stretch, bob).
+## Health: the hero starts each run with a few hearts. Touching a hazard costs
+## one heart and grants a short burst of invulnerability (the sprite flashes)
+## instead of ending the run outright. Losing the last heart ends the run, as
+## does falling in a pit or being swept off the left edge - those call die()
+## directly because no amount of health saves you.
 
 signal died
+signal health_changed(health: int)
 
 @export var speed: float = 220.0
 @export var gravity: float = 1400.0
@@ -20,13 +22,20 @@ signal died
 ## Short "get ready" beat before the hero starts running, so the idle animation
 ## is actually seen at the start of a level.
 @export var start_delay: float = 0.7
+## Hearts the hero begins a run with.
+@export var max_health: int = 3
+## Seconds of mercy after a hit; the sprite flashes for this long.
+@export var invulnerable_time: float = 1.2
 
+var health: int = 3
 var coyote_timer: float = 0.0
 var _jump_buffer: float = 0.0
 var _jump_held: bool = false
 var _is_dead: bool = false
 var _elapsed: float = 0.0
 var _was_airborne: bool = false
+var _invulnerable: float = 0.0
+var _blink: float = 0.0
 var _state: StringName = &"idle"
 
 @onready var _sprite: AnimatedSprite2D = $AnimatedSprite2D
@@ -34,6 +43,7 @@ var _state: StringName = &"idle"
 @onready var _dust: CPUParticles2D = $LandDust
 
 func _ready() -> void:
+	health = max_health
 	_sprite.play(&"idle")
 	_anim.play(&"idle")
 
@@ -43,6 +53,8 @@ func _physics_process(delta: float) -> void:
 
 	velocity.x = speed if running else 0.0
 	velocity.y += gravity * delta
+
+	_update_invulnerability(delta)
 
 	if is_on_floor():
 		coyote_timer = coyote_time
@@ -63,6 +75,7 @@ func _physics_process(delta: float) -> void:
 			velocity.y = jump_velocity
 			_jump_buffer = 0.0
 			coyote_timer = 0.0
+			Audio.play_sfx("jump")
 
 	move_and_slide()
 	_update_state()
@@ -77,6 +90,7 @@ func _update_state() -> void:
 		_sprite.play(&"running")
 		_anim.play(&"land")
 		_dust.restart()
+		Audio.play_sfx("land")
 		return
 	_was_airborne = not on_floor
 
@@ -102,9 +116,36 @@ func _update_state() -> void:
 			_sprite.play(&"idle")
 			_anim.play(&"idle")
 
+## Takes a hit. Ignored while still flashing or once dead. Returns true if the
+## hit actually landed.
+func hurt(amount: int = 1) -> bool:
+	if _is_dead or _invulnerable > 0.0:
+		return false
+	health = maxi(0, health - amount)
+	health_changed.emit(health)
+	if health <= 0:
+		die()
+		return true
+	_invulnerable = invulnerable_time
+	Audio.play_sfx("hurt")
+	return true
+
+func is_invulnerable() -> bool:
+	return _invulnerable > 0.0
+
 func die() -> void:
 	if _is_dead:
 		return
 	_is_dead = true
 	set_physics_process(false)
+	Audio.play_sfx("death")
 	died.emit()
+
+func _update_invulnerability(delta: float) -> void:
+	if _invulnerable > 0.0:
+		_invulnerable -= delta
+		_blink += delta
+		_sprite.modulate.a = 0.35 if fmod(_blink, 0.16) < 0.08 else 1.0
+		if _invulnerable <= 0.0:
+			_invulnerable = 0.0
+			_sprite.modulate.a = 1.0

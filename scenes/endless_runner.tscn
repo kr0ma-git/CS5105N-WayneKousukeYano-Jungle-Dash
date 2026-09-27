@@ -1,0 +1,323 @@
+[gd_scene format=3 uid="uid://bs1mmairwdqio"]
+
+[ext_resource type="Script" uid="uid://cc76mct3db7we" path="res://scripts/endless_game.gd" id="1_game"]
+[ext_resource type="PackedScene" uid="uid://bujnkedjjno5s" path="res://scenes/player.tscn" id="2_player"]
+[ext_resource type="Script" uid="uid://ccmcu3142gsqr" path="res://scripts/chunk_spawner.gd" id="3_spawner"]
+[ext_resource type="Texture2D" uid="uid://oyenjwbqcs48" path="res://assets/generated/jungle_bg.png" id="4_bg"]
+[ext_resource type="Texture2D" uid="uid://dtb7xbku1mjg0" path="res://assets/generated/jungle_canopy.png" id="5_canopy"]
+[ext_resource type="Theme" path="res://assets/ui/theme.tres" id="6_theme"]
+[ext_resource type="Texture2D" uid="uid://c37y2pvj7mk7m" path="res://assets/ch_05_enemies/sprites/heart.png" id="7_heart"]
+[ext_resource type="PackedScene" path="res://scenes/chunks/chunk_opening.tscn" id="8_c0"]
+[ext_resource type="PackedScene" path="res://scenes/chunks/chunk_flat_short.tscn" id="9_c1"]
+[ext_resource type="PackedScene" path="res://scenes/chunks/chunk_flat_long.tscn" id="10_c2"]
+[ext_resource type="PackedScene" path="res://scenes/chunks/chunk_gap_2.tscn" id="11_c3"]
+[ext_resource type="PackedScene" path="res://scenes/chunks/chunk_gap_3.tscn" id="12_c4"]
+[ext_resource type="PackedScene" path="res://scenes/chunks/chunk_gap_4.tscn" id="13_c5"]
+[ext_resource type="PackedScene" path="res://scenes/chunks/chunk_spikes.tscn" id="14_c6"]
+[ext_resource type="PackedScene" path="res://scenes/chunks/chunk_spikes_two.tscn" id="15_c7"]
+[ext_resource type="PackedScene" path="res://scenes/chunks/chunk_bonfire.tscn" id="16_c8"]
+[ext_resource type="PackedScene" path="res://scenes/chunks/chunk_bonfire_pair.tscn" id="17_c9"]
+[ext_resource type="PackedScene" path="res://scenes/chunks/chunk_ledge.tscn" id="18_c10"]
+[ext_resource type="PackedScene" path="res://scenes/chunks/chunk_gap_spikes.tscn" id="19_c11"]
+[ext_resource type="PackedScene" path="res://scenes/chunks/chunk_island.tscn" id="20_c12"]
+[ext_resource type="PackedScene" path="res://scenes/chunks/chunk_snake.tscn" id="21_c13"]
+[ext_resource type="PackedScene" path="res://scenes/chunks/chunk_snake_pair.tscn" id="22_c14"]
+[ext_resource type="PackedScene" path="res://scenes/chunks/chunk_ledge_snake.tscn" id="23_c15"]
+[ext_resource type="PackedScene" path="res://scenes/chunks/chunk_bonfire_snake.tscn" id="24_c16"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hud"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+bg_color = Color(0.02, 0.06, 0.04, 0.62)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_heart"]
+atlas = ExtResource("7_heart")
+region = Rect2(0, 0, 32, 32)
+
+[node name="EndlessRunner" type="Node2D" unique_id=1135845115]
+process_mode = 3
+script = ExtResource("1_game")
+
+[node name="SkyBackdrop" type="ColorRect" parent="." unique_id=1839134609]
+offset_left = -200.0
+offset_top = -700.0
+offset_right = 2800.0
+offset_bottom = 1400.0
+color = Color(0.086, 0.145, 0.121, 1)
+
+[node name="Background" type="Node2D" parent="." unique_id=150688347]
+
+[node name="BgA" type="Sprite2D" parent="Background" unique_id=1019238746]
+position = Vector2(0, -150)
+texture = ExtResource("4_bg")
+centered = false
+
+[node name="BgB" type="Sprite2D" parent="Background" unique_id=641279662]
+position = Vector2(2304, -150)
+texture = ExtResource("4_bg")
+centered = false
+
+[node name="Spawner" type="Node2D" parent="." unique_id=1784032111]
+process_mode = 1
+script = ExtResource("3_spawner")
+chunk_scenes = Array[PackedScene]([ExtResource("9_c1"), ExtResource("10_c2"), ExtResource("11_c3"), ExtResource("12_c4"), ExtResource("13_c5"), ExtResource("14_c6"), ExtResource("15_c7"), ExtResource("16_c8"), ExtResource("17_c9"), ExtResource("18_c10"), ExtResource("19_c11"), ExtResource("20_c12"), ExtResource("21_c13"), ExtResource("22_c14"), ExtResource("23_c15"), ExtResource("24_c16")])
+opening_chunk = ExtResource("8_c0")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1042090515]
+position = Vector2(576, 186)
+
+[node name="Player" parent="." unique_id=411574680 instance=ExtResource("2_player")]
+process_mode = 1
+position = Vector2(300, 256)
+speed = 0.0
+start_delay = 0.6
+
+[node name="Canopy" type="Node2D" parent="." unique_id=158224541]
+
+[node name="CanA" type="Sprite2D" parent="Canopy" unique_id=780452540]
+position = Vector2(0, -170)
+texture = ExtResource("5_canopy")
+centered = false
+
+[node name="CanB" type="Sprite2D" parent="Canopy" unique_id=824715062]
+position = Vector2(1024, -170)
+texture = ExtResource("5_canopy")
+centered = false
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=934315999]
+
+[node name="Root" type="Control" parent="HUD" unique_id=2013924879]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme = ExtResource("6_theme")
+
+[node name="HeartPanel" type="PanelContainer" parent="HUD/Root" unique_id=1061521190]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 22.0
+offset_right = 216.0
+offset_bottom = 90.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hud")
+
+[node name="Hearts" type="HBoxContainer" parent="HUD/Root/HeartPanel" unique_id=2050728198]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Heart1" type="TextureRect" parent="HUD/Root/HeartPanel/Hearts" unique_id=1315361494]
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+texture = SubResource("AtlasTexture_heart")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Heart2" type="TextureRect" parent="HUD/Root/HeartPanel/Hearts" unique_id=1581131233]
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+texture = SubResource("AtlasTexture_heart")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Heart3" type="TextureRect" parent="HUD/Root/HeartPanel/Hearts" unique_id=9670946]
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+texture = SubResource("AtlasTexture_heart")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ScoreBox" type="VBoxContainer" parent="HUD/Root" unique_id=825608782]
+layout_mode = 0
+offset_left = 860.0
+offset_top = 18.0
+offset_right = 1128.0
+offset_bottom = 128.0
+theme_override_constants/separation = 0
+
+[node name="Score" type="Label" parent="HUD/Root/ScoreBox" unique_id=1650417437]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.976, 0.851, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.85)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 46
+text = "0 m"
+horizontal_alignment = 2
+
+[node name="Timer" type="Label" parent="HUD/Root/ScoreBox" unique_id=1701900603]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.953, 0.949, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.85)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 22
+text = "TIME  0:00"
+horizontal_alignment = 2
+
+[node name="Best" type="Label" parent="HUD/Root/ScoreBox" unique_id=527739275]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.855, 0.902, 0.749, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.85)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 22
+text = "BEST  0 m"
+horizontal_alignment = 2
+
+[node name="Hint" type="Label" parent="HUD/Root" unique_id=1427295192]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 588.0
+offset_right = 1128.0
+offset_bottom = 630.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.8)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 22
+text = "SPACE / W to jump  -  dodge the snakes, spikes and pits"
+horizontal_alignment = 1
+
+[node name="Overlay" type="CanvasLayer" parent="." unique_id=370224021]
+process_mode = 3
+
+[node name="PausePanel" type="Control" parent="Overlay" unique_id=2009561295]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("6_theme")
+
+[node name="Dimmer" type="ColorRect" parent="Overlay/PausePanel" unique_id=576947442]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.6)
+
+[node name="Center" type="CenterContainer" parent="Overlay/PausePanel" unique_id=321622558]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Panel" type="PanelContainer" parent="Overlay/PausePanel/Center" unique_id=1662764400]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Overlay/PausePanel/Center/Panel" unique_id=1608121160]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="Overlay/PausePanel/Center/Panel/VBox" unique_id=1153457809]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "PAUSED"
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="Overlay/PausePanel/Center/Panel/VBox" unique_id=275975564]
+custom_minimum_size = Vector2(340, 54)
+layout_mode = 2
+text = "RESUME"
+
+[node name="RestartButton" type="Button" parent="Overlay/PausePanel/Center/Panel/VBox" unique_id=1573753017]
+custom_minimum_size = Vector2(340, 54)
+layout_mode = 2
+text = "RESTART"
+
+[node name="MenuButton" type="Button" parent="Overlay/PausePanel/Center/Panel/VBox" unique_id=1951178143]
+custom_minimum_size = Vector2(340, 54)
+layout_mode = 2
+text = "MAIN MENU"
+
+[node name="MusicRow" type="HBoxContainer" parent="Overlay/PausePanel/Center/Panel/VBox" unique_id=164658387]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Label" type="Label" parent="Overlay/PausePanel/Center/Panel/VBox/MusicRow" unique_id=977415326]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "MUSIC"
+
+[node name="MusicSlider" type="HSlider" parent="Overlay/PausePanel/Center/Panel/VBox/MusicRow" unique_id=964413156]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+value = 70.0
+
+[node name="SfxRow" type="HBoxContainer" parent="Overlay/PausePanel/Center/Panel/VBox" unique_id=1307239563]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Label" type="Label" parent="Overlay/PausePanel/Center/Panel/VBox/SfxRow" unique_id=221596032]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "SFX"
+
+[node name="SfxSlider" type="HSlider" parent="Overlay/PausePanel/Center/Panel/VBox/SfxRow" unique_id=558323587]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+value = 80.0
+
+[node name="Hint" type="Label" parent="Overlay/PausePanel/Center/Panel/VBox" unique_id=542688382]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "ESC to resume"
+horizontal_alignment = 1
+
+[node name="GameOverPanel" type="Control" parent="Overlay" unique_id=480990854]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("6_theme")
+
+[node name="Dimmer" type="ColorRect" parent="Overlay/GameOverPanel" unique_id=1816748710]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.05, 0.02, 0.02, 0.7)
+
+[node name="Center" type="CenterContainer" parent="Overlay/GameOverPanel" unique_id=1941290332]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Panel" type="PanelContainer" parent="Overlay/GameOverPanel/Center" unique_id=1301525188]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Overlay/GameOverPanel/Center/Panel" unique_id=285040460]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Overlay/GameOverPanel/Center/Panel/VBox" unique_id=2055938587]
+layout_mode = 2
+theme_override_font_sizes/font_size = 54
+text = "GAME OVER"
+horizontal_alignment = 1
+
+[node name="FinalScore" type="Label" parent="Overlay/GameOverPanel/Center/Panel/VBox" unique_id=437150429]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "DISTANCE   0 m"
+horizontal_alignment = 1
+
+[node name="FinalBest" type="Label" parent="Overlay/GameOverPanel/Center/Panel/VBox" unique_id=659679930]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.855, 0.902, 0.749, 1)
+theme_override_font_sizes/font_size = 24
+text = "BEST   0 m"
+horizontal_alignment = 1
+
+[node name="RetryButton" type="Button" parent="Overlay/GameOverPanel/Center/Panel/VBox" unique_id=96816600]
+custom_minimum_size = Vector2(340, 54)
+layout_mode = 2
+text = "RETRY"
+
+[node name="MenuButton" type="Button" parent="Overlay/GameOverPanel/Center/Panel/VBox" unique_id=1606669166]
+custom_minimum_size = Vector2(340, 54)
+layout_mode = 2
+text = "MAIN MENU"

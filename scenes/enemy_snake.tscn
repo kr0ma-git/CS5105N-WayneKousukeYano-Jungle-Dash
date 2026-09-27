@@ -1,0 +1,72 @@
+[gd_scene format=3 uid="uid://c80qtnb0d4jh5"]
+
+[ext_resource type="Script" uid="uid://hgw2y75g3rtw" path="res://scripts/enemy_snake.gd" id="1_snake"]
+[ext_resource type="Texture2D" uid="uid://cmoy2efvy4t4g" path="res://assets/generated/snake_slither.png" id="2_8bq8f"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qmh0l"]
+atlas = ExtResource("2_8bq8f")
+region = Rect2(0, 0, 96, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xhlo2"]
+atlas = ExtResource("2_8bq8f")
+region = Rect2(96, 0, 96, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2pab6"]
+atlas = ExtResource("2_8bq8f")
+region = Rect2(192, 0, 96, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a35dn"]
+atlas = ExtResource("2_8bq8f")
+region = Rect2(288, 0, 96, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nqnoh"]
+atlas = ExtResource("2_8bq8f")
+region = Rect2(384, 0, 96, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nexp4"]
+atlas = ExtResource("2_8bq8f")
+region = Rect2(480, 0, 96, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_xm45e"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qmh0l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xhlo2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2pab6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a35dn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nqnoh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nexp4")
+}],
+"loop": 1,
+"name": &"slithering_along_the_ground_body_rippling_side_to_side_head_bobbing",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_snake"]
+size = Vector2(84, 26)
+
+[node name="Snake" type="Area2D" unique_id=450420760]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_snake")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1223196740]
+position = Vector2(0, -32)
+sprite_frames = SubResource("SpriteFrames_xm45e")
+animation = &"slithering_along_the_ground_body_rippling_side_to_side_head_bobbing"
+autoplay = "slithering_along_the_ground_body_rippling_side_to_side_head_bobbing"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=555071686]
+position = Vector2(0, -16)
+shape = SubResource("RectangleShape2D_snake")
