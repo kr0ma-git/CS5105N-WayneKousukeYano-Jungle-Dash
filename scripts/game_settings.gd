@@ -28,12 +28,16 @@ func save_run(distance: float, elapsed: float, health: int, speed: float) -> voi
 	cfg.set_value("run", "elapsed", elapsed)
 	cfg.set_value("run", "health", health)
 	cfg.set_value("run", "speed", speed)
-	if cfg.save(RUN_SAVE_PATH) == OK:
+	var save_error: Error = cfg.save(RUN_SAVE_PATH)
+	if save_error == OK:
 		run_save = {"distance": distance, "elapsed": elapsed, "health": health, "speed": speed}
+	else:
+		push_warning("Could not save run data (%s). In a browser, persistent storage requires IndexedDB/cookies to be available." % error_string(save_error))
 
 func load_run() -> Dictionary:
 	var cfg := ConfigFile.new()
-	if cfg.load(RUN_SAVE_PATH) != OK:
+	var load_error: Error = cfg.load(RUN_SAVE_PATH)
+	if load_error != OK:
 		return {}
 	run_save = {
 		"distance": float(cfg.get_value("run", "distance", 0.0)),
@@ -72,7 +76,9 @@ func save_settings() -> void:
 	cfg.set_value("audio", "sfx", sfx_volume)
 	cfg.set_value("input", "jump", jump_keycode)
 	cfg.set_value("progress", "best", best_distance)
-	cfg.save(CONFIG_PATH)
+	var save_error: Error = cfg.save(CONFIG_PATH)
+	if save_error != OK:
+		push_warning("Could not save settings (%s). Browser storage may be unavailable or blocked." % error_string(save_error))
 
 func set_music_volume(value: float) -> void:
 	music_volume = clampf(value, 0.0, 1.0)

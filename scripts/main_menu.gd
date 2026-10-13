@@ -30,6 +30,7 @@ func _ready() -> void:
 	_continue_button.pressed.connect(_continue_game)
 	_settings_button.pressed.connect(_open_settings)
 	_quit_button.pressed.connect(_quit_game)
+	_quit_button.visible = not OS.has_feature("web")
 	_continue_button.visible = Settings.has_run_save()
 	_close_button.pressed.connect(_close_settings)
 	_key_button.pressed.connect(_begin_rebind)
