@@ -45,6 +45,7 @@ const HINT_HOLD := 5.0
 @onready var _final_best: Label = $Overlay/GameOverPanel/Center/Panel/VBox/FinalBest
 @onready var _music_slider: HSlider = $Overlay/PausePanel/Center/Panel/VBox/MusicRow/MusicSlider
 @onready var _sfx_slider: HSlider = $Overlay/PausePanel/Center/Panel/VBox/SfxRow/SfxSlider
+@onready var _camera: Camera2D = $Camera2D
 
 ## False once the run has ended, so the world stops being policed.
 var _running: bool = true
@@ -52,8 +53,18 @@ var _running: bool = true
 var _elapsed: float = 0.0
 ## Metres covered, remembered from the last frame the hero was alive.
 var _distance: float = 0.0
+var _save_clock: float = 0.0
+var _base_camera_offset: Vector2 = Vector2.ZERO
+var _impact_tween: Tween
 
 func _ready() -> void:
+	_base_camera_offset = _camera.offset
+	var saved: Dictionary = Settings.load_run()
+	if not saved.is_empty():
+		_elapsed = float(saved.get("elapsed", 0.0))
+		_distance = float(saved.get("distance", 0.0))
+		_spawner.restore_run(float(saved.get("distance", 0.0)) * 32.0, float(saved.get("speed", _spawner.start_speed)))
+		_player.restore_health(int(saved.get("health", _player.max_health)))
 	Audio.play_music(Audio.GAME_MUSIC)
 	_player.died.connect(_on_player_died)
 	_player.health_changed.connect(_on_health_changed)
@@ -68,6 +79,10 @@ func _process(delta: float) -> void:
 	if get_tree().paused:
 		return
 	_elapsed += delta
+	_save_clock += delta
+	if _save_clock >= 5.0 and _running:
+		_save_clock = 0.0
+		Settings.save_run(_distance, _elapsed, _player.health, _spawner.speed)
 	if _hint.modulate.a > 0.0 and _elapsed > HINT_HOLD:
 		_hint.modulate.a = maxf(0.0, _hint.modulate.a - delta * 0.7)
 
@@ -145,6 +160,21 @@ func _on_sfx_slider(value: float) -> void:
 
 func _on_health_changed(health: int) -> void:
 	_update_hearts(health)
+	_impact_feedback()
+	Settings.save_run(_distance, _elapsed, health, _spawner.speed)
+
+func _impact_feedback() -> void:
+	Engine.time_scale = 0.12
+	var timer: SceneTreeTimer = get_tree().create_timer(0.055, true, false, true)
+	await timer.timeout
+	Engine.time_scale = 1.0
+	if _impact_tween != null and _impact_tween.is_running():
+		_impact_tween.kill()
+	_camera.offset = _base_camera_offset
+	_impact_tween = create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	_impact_tween.tween_property(_camera, "offset", _base_camera_offset + Vector2(7.0, -4.0), 0.035)
+	_impact_tween.tween_property(_camera, "offset", _base_camera_offset + Vector2(-6.0, 3.0), 0.035)
+	_impact_tween.tween_property(_camera, "offset", _base_camera_offset, 0.05)
 
 ## Shows one heart per remaining life and hides the spent ones.
 func _update_hearts(health: int) -> void:
@@ -155,11 +185,13 @@ func _update_hearts(health: int) -> void:
 
 func _on_player_died() -> void:
 	_running = false
+	Engine.time_scale = 1.0
 	# Freeze the world where it is: nothing should keep scrolling past the hero.
 	get_tree().paused = true
 	# A short beat so the player sees what ended the run, then the summary.
 	await get_tree().create_timer(0.8).timeout
 	var metres: int = int(_distance)
+	Settings.clear_run_save()
 	Settings.set_best_distance(float(metres))
 	_final_score.text = "DISTANCE   %d m" % metres
 	_final_best.text = "BEST   %d m" % int(Settings.best_distance)
@@ -167,6 +199,7 @@ func _on_player_died() -> void:
 	_get_button("Overlay/GameOverPanel/Center/Panel/VBox/RetryButton").grab_focus()
 
 func _pause() -> void:
+	Settings.save_run(_distance, _elapsed, _player.health, _spawner.speed)
 	get_tree().paused = true
 	_pause_panel.visible = true
 	_get_button("Overlay/PausePanel/Center/Panel/VBox/ResumeButton").grab_focus()
@@ -176,9 +209,12 @@ func _resume() -> void:
 	_pause_panel.visible = false
 
 func _restart() -> void:
+	Settings.clear_run_save()
 	get_tree().paused = false
 	get_tree().reload_current_scene()
 
 func _goto_menu() -> void:
+	if _running:
+		Settings.save_run(_distance, _elapsed, _player.health, _spawner.speed)
 	get_tree().paused = false
 	get_tree().change_scene_to_file(MENU_SCENE)

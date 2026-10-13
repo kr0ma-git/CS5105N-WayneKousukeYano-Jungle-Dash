@@ -74,7 +74,11 @@ alignment = 1
 
 [node name="PlayButton" type="Button" parent="Center/Buttons"]
 custom_minimum_size = Vector2(280, 58)
-text = "PLAY"
+text = "NEW RUN"
+
+[node name="ContinueButton" type="Button" parent="Center/Buttons"]
+custom_minimum_size = Vector2(280, 58)
+text = "CONTINUE"
 
 [node name="SettingsButton" type="Button" parent="Center/Buttons"]
 custom_minimum_size = Vector2(280, 58)

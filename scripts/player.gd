@@ -42,6 +42,9 @@ var _state: StringName = &"idle"
 @onready var _anim: AnimationPlayer = $AnimationPlayer
 @onready var _dust: CPUParticles2D = $LandDust
 
+func restore_health(saved_health: int) -> void:
+	health = clampi(saved_health, 1, max_health)
+
 func _ready() -> void:
 	health = max_health
 	_sprite.play(&"idle")

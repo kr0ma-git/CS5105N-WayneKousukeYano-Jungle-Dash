@@ -15,6 +15,38 @@ const JUMP_ACTION := "jump"
 ## W always stays a jump key alongside the chosen one, so the classic binding
 ## never breaks.
 const ALT_JUMP_KEY := KEY_W
+const RUN_SAVE_PATH := "user://run_save.cfg"
+
+var run_save: Dictionary = {}
+
+func has_run_save() -> bool:
+	return FileAccess.file_exists(RUN_SAVE_PATH)
+
+func save_run(distance: float, elapsed: float, health: int, speed: float) -> void:
+	var cfg := ConfigFile.new()
+	cfg.set_value("run", "distance", distance)
+	cfg.set_value("run", "elapsed", elapsed)
+	cfg.set_value("run", "health", health)
+	cfg.set_value("run", "speed", speed)
+	if cfg.save(RUN_SAVE_PATH) == OK:
+		run_save = {"distance": distance, "elapsed": elapsed, "health": health, "speed": speed}
+
+func load_run() -> Dictionary:
+	var cfg := ConfigFile.new()
+	if cfg.load(RUN_SAVE_PATH) != OK:
+		return {}
+	run_save = {
+		"distance": float(cfg.get_value("run", "distance", 0.0)),
+		"elapsed": float(cfg.get_value("run", "elapsed", 0.0)),
+		"health": int(cfg.get_value("run", "health", 3)),
+		"speed": float(cfg.get_value("run", "speed", 230.0))
+	}
+	return run_save.duplicate(true)
+
+func clear_run_save() -> void:
+	if FileAccess.file_exists(RUN_SAVE_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(RUN_SAVE_PATH))
+	run_save.clear()
 
 var music_volume: float = 0.7
 var sfx_volume: float = 0.8

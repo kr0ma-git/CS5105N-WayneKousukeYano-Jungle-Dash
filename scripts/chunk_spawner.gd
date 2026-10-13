@@ -36,9 +36,16 @@ var speed: float = 0.0
 var _frontier: float = 0.0
 var _last_index: int = -1
 var _chunks: Array[Chunk] = []
+var _restored: bool = false
+
+func restore_run(saved_distance: float, saved_speed: float) -> void:
+	distance = maxf(0.0, saved_distance)
+	speed = clampf(saved_speed, start_speed, max_speed)
+	_restored = true
 
 func _ready() -> void:
-	speed = start_speed
+	if not _restored:
+		speed = start_speed
 	# Pre-fill the screen with safe ground so there is always flat floor under
 	# the player at the start of a run.
 	_frontier = despawn_x

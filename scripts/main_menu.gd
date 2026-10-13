@@ -12,6 +12,7 @@ const GAME_SCENE := "res://scenes/endless_runner.tscn"
 @onready var _play_button: Button = $Center/Buttons/PlayButton
 @onready var _settings_button: Button = $Center/Buttons/SettingsButton
 @onready var _quit_button: Button = $Center/Buttons/QuitButton
+@onready var _continue_button: Button = $Center/Buttons/ContinueButton
 
 @onready var _settings_center: CenterContainer = $CenterSettings
 @onready var _music_slider: HSlider = $CenterSettings/SettingsPanel/VBox/MusicRow/MusicSlider
@@ -26,8 +27,10 @@ func _ready() -> void:
 	Audio.play_music(Audio.MENU_MUSIC)
 
 	_play_button.pressed.connect(_start_game)
+	_continue_button.pressed.connect(_continue_game)
 	_settings_button.pressed.connect(_open_settings)
 	_quit_button.pressed.connect(_quit_game)
+	_continue_button.visible = Settings.has_run_save()
 	_close_button.pressed.connect(_close_settings)
 	_key_button.pressed.connect(_begin_rebind)
 
@@ -54,6 +57,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 func _start_game() -> void:
+	Audio.play_sfx("ui_select")
+	Settings.clear_run_save()
+	get_tree().change_scene_to_file(GAME_SCENE)
+
+func _continue_game() -> void:
 	Audio.play_sfx("ui_select")
 	get_tree().change_scene_to_file(GAME_SCENE)
 
