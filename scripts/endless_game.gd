@@ -34,11 +34,14 @@ const HINT_HOLD := 5.0
 @onready var _spawner: ChunkSpawner = $Spawner
 @onready var _background: Node2D = $Background
 @onready var _canopy: Node2D = $Canopy
-@onready var _hearts: HBoxContainer = $HUD/Root/HeartPanel/Hearts
-@onready var _score: Label = $HUD/Root/ScoreBox/Score
-@onready var _best: Label = $HUD/Root/ScoreBox/Best
-@onready var _time: Label = $HUD/Root/ScoreBox/Timer
-@onready var _hint: Label = $HUD/Root/Hint
+@onready var _hearts: HBoxContainer = $CanvasLayer/Root/HeartPanel/Hearts
+@onready var _score_box: VBoxContainer = $CanvasLayer/Root/ScoreBox
+@onready var _score: Label = $CanvasLayer/Root/ScoreBox/Score
+@onready var _best: Label = $CanvasLayer/Root/ScoreBox/Best
+@onready var _time: Label = $CanvasLayer/Root/ScoreBox/Timer
+@onready var _hint: Label = $CanvasLayer/Root/Hint
+@onready var _touch_jump: Button = $CanvasLayer/Root/TouchJump
+@onready var _touch_pause: Button = $CanvasLayer/Root/TouchPause
 @onready var _pause_panel: Control = $Overlay/PausePanel
 @onready var _gameover_panel: Control = $Overlay/GameOverPanel
 @onready var _final_score: Label = $Overlay/GameOverPanel/Center/Panel/VBox/FinalScore
@@ -73,7 +76,17 @@ func _ready() -> void:
 	# Show whichever key the player has actually bound, so the accessibility
 	# rebind is reflected in the hint instead of a hard-coded key name.
 	_hint.text = "%s / W to jump  -  dodge the snakes, spikes and pits" % Settings.jump_key_label()
+	if DisplayServer.is_touchscreen_available():
+		_hint.text = "Tap JUMP - dodge the snakes, spikes and pits"
 	_bind_overlay()
+	var touch_available: bool = DisplayServer.is_touchscreen_available()
+	_touch_jump.visible = touch_available
+	_touch_jump.button_down.connect(_on_touch_jump_down)
+	_touch_jump.button_up.connect(_on_touch_jump_up)
+	_touch_pause.visible = touch_available
+	_touch_pause.pressed.connect(_pause)
+	if touch_available:
+		_score_box.offset_right = -132.0
 
 func _process(delta: float) -> void:
 	if get_tree().paused:
@@ -157,6 +170,12 @@ func _on_music_slider(value: float) -> void:
 
 func _on_sfx_slider(value: float) -> void:
 	Settings.set_sfx_volume(value / 100.0)
+
+func _on_touch_jump_down() -> void:
+	Input.action_press("jump")
+
+func _on_touch_jump_up() -> void:
+	Input.action_release("jump")
 
 func _on_health_changed(health: int) -> void:
 	_update_hearts(health)

@@ -31,6 +31,7 @@ var health: int = 3
 var coyote_timer: float = 0.0
 var _jump_buffer: float = 0.0
 var _jump_held: bool = false
+var _touch_jump_held: bool = false
 var _is_dead: bool = false
 var _elapsed: float = 0.0
 var _was_airborne: bool = false
@@ -41,6 +42,9 @@ var _state: StringName = &"idle"
 @onready var _sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var _anim: AnimationPlayer = $AnimationPlayer
 @onready var _dust: CPUParticles2D = $LandDust
+
+func set_touch_jump_held(held: bool) -> void:
+	_touch_jump_held = held
 
 func restore_health(saved_health: int) -> void:
 	health = clampi(saved_health, 1, max_health)
@@ -68,7 +72,7 @@ func _physics_process(delta: float) -> void:
 		# Edge-detect the jump press ourselves instead of is_action_just_pressed
 		# and buffer it briefly, so a press that lands on a frame with no physics
 		# step, or a split second before touching down, is never lost.
-		var held: bool = Input.is_action_pressed("jump")
+		var held: bool = Input.is_action_pressed("jump") or _touch_jump_held
 		if held and not _jump_held:
 			_jump_buffer = jump_buffer_time
 		_jump_held = held
